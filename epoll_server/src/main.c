@@ -3,12 +3,12 @@
 
 #include "epoll_server.h"
 
-int epoll_server(int ip_addr, int port)
+int epoll_server(int ip_addr, int port, int backlog)
 {
     int ret = -1;
     int sockfd = -1;
 
-    sockfd = get_listening_socket(ip_addr, port);
+    sockfd = get_listening_socket(ip_addr, port, backlog);
     if (sockfd == -1) {
         return -1;
     }
@@ -26,7 +26,7 @@ int epoll_server(int ip_addr, int port)
 
 int entry()
 {
-    epoll_server(0x7f000001, 9999);
+    epoll_server(0x7f000001, 9999, 10);
     return 0;
 }
 

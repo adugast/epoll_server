@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int get_listening_socket(int ip_addr, int port)
+int get_listening_socket(int ip_addr, int port, int backlog)
 {
     int ret = -1;
     int sockfd = -1;
@@ -31,7 +31,7 @@ int get_listening_socket(int ip_addr, int port)
     }
 
     // 3) listen
-    ret = listen(sockfd, 10);
+    ret = listen(sockfd, backlog);
     if (ret == -1) {
         perror("listen()");
         close(sockfd);
