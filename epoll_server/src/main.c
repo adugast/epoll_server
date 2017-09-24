@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "my_socket.h"
+#include "epoll_server.h"
 
 int epoll_server(int ip_addr, int port)
 {
@@ -9,9 +9,11 @@ int epoll_server(int ip_addr, int port)
     int sockfd = -1;
 
     sockfd = get_listening_socket(ip_addr, port);
-    if (ret == -1) {
+    if (sockfd == -1) {
         return -1;
     }
+
+    epoll_server_loop(sockfd);
 
     ret = close(sockfd);
     if (ret == -1) {
@@ -24,7 +26,6 @@ int epoll_server(int ip_addr, int port)
 
 int entry()
 {
-    printf("[entry]\n");
     epoll_server(0x7f000001, 9999);
     return 0;
 }
