@@ -15,12 +15,6 @@ int epoll_server(int ip_addr, int port, int backlog)
 
     epoll_server_loop(sockfd);
 
-    ret = close(sockfd);
-    if (ret == -1) {
-        perror("close()");
-        return -1;
-    }
-
     return 0;
 }
 
