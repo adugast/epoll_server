@@ -7,9 +7,12 @@
 
 #include "epoll_server.h"
 
+
+#define BUFFER_LEN 256
 #define MAX_EVENTS 10
 
-static int set_nonblocking(int sockfd)
+
+static int set_fd_nonblocking(int sockfd)
 {
     int flags = -1;
 
@@ -29,7 +32,8 @@ static int set_nonblocking(int sockfd)
     return 0;
 }
 
-int epoll_server_loop(int sockfd)
+
+static int epoll_server_loop(int sockfd)
 {
     int ret = -1;
 
@@ -46,7 +50,7 @@ int epoll_server_loop(int sockfd)
         return -1;
     }
 
-    // 2) Epoll ctl
+    // 2) epoll ctl
     evt.events = EPOLLIN;
     evt.data.fd = sockfd;
 
@@ -81,7 +85,7 @@ int epoll_server_loop(int sockfd)
                     printf("client[%d]:connected\n", cli_fd);
                 }
 
-                set_nonblocking(cli_fd);
+                set_fd_nonblocking(cli_fd);
 
                 evt.events = EPOLLIN | EPOLLET;
                 evt.data.fd = cli_fd;
@@ -93,10 +97,10 @@ int epoll_server_loop(int sockfd)
 
             } else {
 
-                char buffer[256] = {0};
+                char buffer[BUFFER_LEN] = {0};
                 ssize_t size_recv = 0;
 
-                size_recv = recv(events[i].data.fd, buffer, 255, 0);
+                size_recv = recv(events[i].data.fd, buffer, BUFFER_LEN, 0);
                 if (size_recv < 1) {
                     printf("client[%d]:disconnected\n", events[i].data.fd);
                     close(events[i].data.fd);
@@ -111,3 +115,21 @@ int epoll_server_loop(int sockfd)
     return 0;
 }
 
+
+int epoll_server(int ip_addr, int port, int backlog)
+{
+    int ret = -1;
+    int sockfd = -1;
+
+    sockfd = get_listening_socket(ip_addr, port, backlog);
+    if (sockfd == -1) {
+        return -1;
+    }
+
+    ret = epoll_server_loop(sockfd);
+    if (ret == -1) {
+        return -1;
+    }
+
+    return 0;
+}
