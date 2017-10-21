@@ -10,6 +10,6 @@ project(epoll_server)
 add_executable(
     epoll_server
     src/main.c
+    src/epoll_server.c
     src/get_listening_socket.c
-    src/epoll_server_loop.c
 )

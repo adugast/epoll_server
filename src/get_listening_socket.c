@@ -1,8 +1,7 @@
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <unistd.h>
+
 
 int get_listening_socket(int ip_addr, int port, int backlog)
 {
